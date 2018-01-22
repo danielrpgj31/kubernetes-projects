@@ -1,0 +1,11 @@
+#!/bin/bash
+COUNTER=0
+MAXCURL=15
+while [ $COUNTER -lt $MAXCURL ]; do
+   OUTPUT="$(curl http:/$1:30305/testwebapp/)"
+   if [ "$OUTPUT" != "404 page not found" ]; then
+      echo $OUTPUT 
+      let COUNTER=COUNTER+1
+      sleep 1
+   fi
+done

@@ -1,0 +1,98 @@
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRole
+metadata:
+  name: webhook
+rules:
+- apiGroups: [""]
+  resources:
+  - nodes
+  - namespaces
+  - nodes/proxy
+  - services
+  - endpoints
+  - pods
+  - services/status
+  verbs: ["get", "list", "watch"]
+- apiGroups:
+  - extensions
+  resources:
+  - ingresses
+  verbs: ["get", "list", "watch"]
+- apiGroups: ["weblogic.oracle"]
+  resources: ["domains"]
+  verbs: ["get", "list", "watch", "update"]  
+---
+
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: default
+  namespace: monitoring
+---
+
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRoleBinding
+metadata:
+  name: webhook
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: webhook
+subjects:
+- kind: ServiceAccount
+  name: default
+  namespace: monitoring
+---
+
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    name: webhook
+  name: webhook
+  namespace: monitoring
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: webhook
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+         name: webhook
+    spec:
+      containers:
+      - image: webhook:latest
+        imagePullPolicy: IfNotPresent
+        name: webhook
+        env:
+        - name: INTERNAL_OPERATOR_CERT
+          value: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUQwakNDQXJxZ0F3SUJBZ0lFUHdzb3p6QU5CZ2txaGtpRzl3MEJBUXNGQURBY01Sb3dHQVlEVlFRREV4RjMNClpXSnNiMmRwWXkxdmNHVnlZWFJ2Y2pBZUZ3MHhPREF4TVRZeU1UTXpNRGhhRncweU9EQXhNVFF5TVRNek1EaGENCk1Cd3hHakFZQmdOVkJBTVRFWGRsWW14dloybGpMVzl3WlhKaGRHOXlNSUlCSWpBTkJna3Foa2lHOXcwQkFRRUYNCkFBT0NBUThBTUlJQkNnS0NBUUVBbFZidHJPY0E1cVQ5cUs4THBMWnZtVit0RmZ4L1FtaEwwcWlrOUZqK2Ftb0INCm9pKythWHpvbmhZMW5RckE5UTQ5SXNVU1JIWk9BL3gxSklkU1UyaFV4ZDcrSzJVaFBQSFZJN3hIdVNXQjlBZDQNCjJDV0lXd1JkWjZpdHZrdFdMV0JzVFEwQzRjS1N2TTBLOGNMSmdWQ2JueHJudXI2eVAzRS9YWkUyWVp6eHFTSHUNCjE5NjU2dEtqU1dvMVNUdG1sSkxBZHJ2K0RndmRDUnNRTWE4UCsrZWlueWlHS1RwK1ZWbHlteDYvbFF0bkZjZHANCnpuOHdoUU9JcjB3T2g5TDJPcHdZWGtZMGNqaFVOcWd5a3JLZklKck9nUVlBNzF2Q0xpeTlIMWVob0ZTMFJacmoNCmV1dVJ1K01GS212TlM1VSt2Y29SZG5rcEY3RzQwUmk2WlU0aHB3T3Fod0lEQVFBQm80SUJHakNDQVJZd0N3WUQNClZSMFBCQVFEQWdQNE1JSG5CZ05WSFJFRWdkOHdnZHlDSW1sdWRHVnlibUZzTFhkbFlteHZaMmxqTFc5d1pYSmgNCmRHOXlMWE5sY25acFkyV0NOR2x1ZEdWeWJtRnNMWGRsWW14dloybGpMVzl3WlhKaGRHOXlMWE5sY25acFkyVXUNCmQyVmliRzluYVdNdGIzQmxjbUYwYjNLQ09HbHVkR1Z5Ym1Gc0xYZGxZbXh2WjJsakxXOXdaWEpoZEc5eUxYTmwNCmNuWnBZMlV1ZDJWaWJHOW5hV010YjNCbGNtRjBiM0l1YzNaamdrWnBiblJsY201aGJDMTNaV0pzYjJkcFl5MXYNCmNHVnlZWFJ2Y2kxelpYSjJhV05sTG5kbFlteHZaMmxqTFc5d1pYSmhkRzl5TG5OMll5NWpiSFZ6ZEdWeUxteHYNClkyRnNNQjBHQTFVZERnUVdCQlRyNUgzYzJpQXBvWnl0VGhYNXVYS3loU0JtT3pBTkJna3Foa2lHOXcwQkFRc0YNCkFBT0NBUUVBaDFCOUsyM2tFcmtiSlVVUytzNDcvL0ZCSDdvWXlMU2FNZE96OUVyVlRSb3N4bzBNTHNZYyt0Vm4NCjEyZnFlMjBzKzVDSGtPU1ZGTkNQVHh0UVhBMjQyYlJKRWlDeDlUWmMySkJWYThvUG45MXdFZnlrdUlhS2lrZGoNCmZNWmI3OWY1ejVpV1dJV3V4MGZNdjRhbGhrbGg5cTV1bFdwS09Da1FUR1prWitiTWRlRkVkOHJDZjhrMWdoRC8NCk9NTkx6dkdHRGlQaUs4TFZBR1dwZlUyYWJhY2o3UEZuY2RCcGFCYjd6UzRqbDlWMEwySG1FWVgxZXhabGdYM3UNCkRjSjdWRjRsKzl4bWNoays4SkJFajNCQU1TMlM1clk2b1F6b1BVd2puZ083ZGJTYk00T0dpMEdyVGx3dFplUkkNCmxmMFFEbFlyaGEyODFHL2dDTGVVZTNsaEhsdExCUT09Ci0tLS0tRU5EIENFUlRJRklDQVRFLS0tLS0K
+        ports:
+        - containerPort: 9000
+          protocol: TCP
+        resources:
+          limits:
+            cpu: 500m
+            memory: 2500Mi
+          requests:
+            cpu: 100m
+            memory: 100Mi
+      restartPolicy: Always
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: webhook
+  namespace: monitoring
+spec:
+  selector:
+    name: webhook
+  type: ClusterIP
+  ports:
+  - port: 9000
+
