@@ -497,6 +497,9 @@ then
     -H "$content_type" \
     -H "$requested_by" \
     -H "$authorization" \
+    -o curl.out \
+    --stderr curl.err \
+    --insecure \
     -d "$request_body" \
     $operator_url)
 else
