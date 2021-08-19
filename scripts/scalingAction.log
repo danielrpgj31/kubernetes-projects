@@ -1,0 +1,14 @@
+@[2021-08-19T13:04:28.958 UTC][sample-domain1-ns][sample-domain1][cluster-1][INFO] scaling_action: scaleUp
+@[2021-08-19T13:04:28.965 UTC][sample-domain1-ns][sample-domain1][cluster-1][INFO] wls_domain_uid: sample-domain1
+@[2021-08-19T13:04:28.971 UTC][sample-domain1-ns][sample-domain1][cluster-1][INFO] wls_cluster_name: cluster-1
+@[2021-08-19T13:04:28.976 UTC][sample-domain1-ns][sample-domain1][cluster-1][INFO] wls_domain_namespace: sample-domain1-ns
+@[2021-08-19T13:04:28.981 UTC][sample-domain1-ns][sample-domain1][cluster-1][INFO] operator_service_name: internal-weblogic-operator-svc
+@[2021-08-19T13:04:28.987 UTC][sample-domain1-ns][sample-domain1][cluster-1][INFO] operator_service_account: sample-weblogic-operator-sa
+@[2021-08-19T13:04:28.992 UTC][sample-domain1-ns][sample-domain1][cluster-1][INFO] operator_namespace: sample-weblogic-operator-ns
+@[2021-08-19T13:04:28.997 UTC][sample-domain1-ns][sample-domain1][cluster-1][INFO] scaling_size: 1
+@[2021-08-19T13:04:29.180 UTC][sample-domain1-ns][sample-domain1][cluster-1][INFO] port: 8082
+@[2021-08-19T13:04:29.307 UTC][sample-domain1-ns][sample-domain1][cluster-1][INFO] domain_api_version: v8
+@[2021-08-19T13:04:29.492 UTC][sample-domain1-ns][sample-domain1][cluster-1][INFO] cluster-1 defined in clusters
+@[2021-08-19T13:04:29.521 UTC][sample-domain1-ns][sample-domain1][cluster-1][INFO] current number of managed servers is 2
+@[2021-08-19T13:04:29.600 UTC][sample-domain1-ns][sample-domain1][cluster-1][INFO] domainName: sample-domain1 | clusterName: cluster-1 | action: scaleUp | port: 8082 | apiVer: v8 | inClusterPresent: True | oldReplica:  | newReplica: 3 | operator_url: https://internal-weblogic-operator-svc.sample-weblogic-operator-ns.svc.cluster.local:8082/operator/v1/domains/sample-domain1/clusters/cluster-1/scale
+@[2021-08-19T13:04:29.704 UTC][sample-domain1-ns][sample-domain1][cluster-1][INFO] Failed scaling request to WebLogic Operator
